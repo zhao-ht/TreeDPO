@@ -1,0 +1,44 @@
+### model
+model_name_or_path: models/Meta-Llama-3-8B-Instruct
+
+### method
+stage: dpo
+do_train: true
+finetuning_type: full
+
+### deepspeed
+deepspeed: LLaMA-Factory/examples/deepspeed/ds_z3_config.json
+
+### dataset
+dataset: tree_dpo_temperature_256_put_cool_babyai_math_8_30_1000_0.5_math_more,eurus_dpo,ultrafeedback_allpairs
+dataset_dir: data
+max_samples: None,14000,14000
+template: llama3
+cutoff_len: 4096 # The maximum length on 8 A100 40G for Llama-3-8B with ds_z3_offload
+overwrite_cache: true
+preprocessing_num_workers: 16
+cache_dir: dataset/
+
+### output
+output_dir: saves/Meta-Llama-3-8B-Instruct/full/tree_dpo_temperature_256_put_cool_babyai_math_8_30_1000_0.5_math_more
+logging_steps: 1
+save_steps: 200
+plot_loss: true
+#overwrite_output_dir: true
+
+### train
+# n_gpu=8
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 7.2e-08
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 1.0
+fp16: true
+ddp_timeout: 180000000
+
+### eval
+val_size: 0.005
+per_device_eval_batch_size: 1
+evaluation_strategy: steps
+eval_steps: 500
